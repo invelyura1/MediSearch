@@ -1,0 +1,73 @@
+ScreenManager:
+    LoginScreen:
+        name: 'login_screen'
+    MapScreen:
+        name: 'map_screen'
+
+<LoginScreen>:
+    MDTextField:
+        id: username
+        hint_text: "Username"
+        pos_hint: {"center_x": 0.5, "center_y": 0.6}
+
+    MDTextField:
+        id: password
+        hint_text: "Password"
+        password: True
+        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+    MDRaisedButton:
+        text: "Login"
+        pos_hint: {"center_x": 0.5, "center_y": 0.4}
+        on_release: app.check_login(username.text, password.text)
+        on_press: root.manager.current = 'map_screen'  # Updated to match the name in ScreenManager
+
+<MapScreen>:
+    FloatLayout:
+
+        # Background Map View (full screen)
+        MapView:  # Replace with your map widget class if it's different
+            id: map_view
+            size_hint: (1, 1)
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+        # Top bar for the title
+        MDTopAppBar:
+            title: 'MEDISEARCH'
+            elevation: 10
+            left_action_items: [['menu', lambda x: nav_drawer.set_state('open')]]
+            md_bg_color: 1, 0.078, 0.576, 1
+            size_hint_y: None
+            height: '56dp'
+            pos_hint: {"top": 1}
+
+        # Search and Clear Buttons
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: (0.8, None)
+            height: '50dp'
+            pos_hint: {"center_x": 0.5, "top": 0.9}  # Position just below the top bar
+            spacing: 10
+
+            MDTextField:
+                id: search_input
+                hint_text: 'Search for medicine...'
+                size_hint_x: 0.6
+                height: '40dp'
+                multiline: False
+                background_color: (0.9, 0.95, 1, 1)
+
+            MDRaisedButton:
+                text: 'Search'
+                size_hint_x: 0.2
+                height: '40dp'
+                background_color: 0.157, 1.0, 0.212, 0.8
+                on_press: app.search_medicine(search_input.text)
+
+            MDRaisedButton:
+                text: 'Clear'
+                size_hint_x: 0.2
+                height: '40dp'
+                background_color: 1.0, 0.0, 0.0, 0.8
+                on_press: app.root.get_screen('map_screen').ids.map_view.clear_route_lines()
+  # Updated access to map_view
